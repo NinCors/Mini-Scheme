@@ -11,7 +11,8 @@ def testDriver():
         if line == '\n':
             print('The input line is empty, exit program')
             sys.exit()
-        outPut = "\nInput string : " + line + parser(scanner(line,'s')) + '\n'
+        parserInfo, status = parser(scanner(line,'s'),'s')
+        outPut = "\nInput string : " + line + parserInfo  + '\n'
         sys.stdout.write(outPut)
 
 if __name__ == '__main__':

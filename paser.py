@@ -47,16 +47,10 @@ def checkParentheses(tokens):
     else:
         # else, start check pair
         start,end = findStartEnd(tokens)
-        #print("tokens is")
-        #print(tokens)
-        #print("start is " + str(start))
-        #print("end is "+ str(end))
         if start != -1 and end != -1:
             # pop start and end, recursively call this function
             tokens.pop(start)
             tokens.pop(end-1)
-            #print("New tokens is")
-            #print(tokens)
             return (checkParentheses(tokens))
         else:
             return False,"ERROR: MISSING parentheses!"
@@ -101,9 +95,13 @@ def parserTree(tokens, parserT):
             parserT.append(tokens[i])
         return parserT 
 
-def parser( tokens ):
+def parser( tokens, mode = 't' ):
     '''
         parser body
+        
+        model:
+               s: return string format 
+               t: return array format
     '''
     if(type(tokens) is str):
         return tokens
@@ -121,20 +119,23 @@ def parser( tokens ):
     cP,m2 = checkParentheses(tmp_tokens)
 
     if cT == False:
-        return m1
+        return m1, False
        
     elif cP == False:
-        return m2
+        return m2, False
 
     elif cQ == False:
-        return m3
+        return m3, False
         
     elif cT and cP and cQ:
         parserT = []
         parserTree(tmp_tokens1,parserT)
-        return treeToStr(parserT)
+        print(parserT)
+        if mode == "s":
+            parserT = treeToStr(parserT)
+        return parserT[0],True
     else:
-        return "Parser ERROR"
+        return "Parser ERROR",False
 
 
 def treeToStr(parserT):

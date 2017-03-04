@@ -5,9 +5,7 @@ import sys
 def error_messages( error_token ):
     error_model_patterns = {
     's_i':'((\+|\-)?([0-9])+)?(([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*)((\+|\-)([0-9]))?',
-    #'i_s':'(\+|\-)?([0-9])+(([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]))',
     's_r':'((\+|\-)?([0-9])*\.([0-9])+)?(([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*)((\+|\-)?([0-9])*\.[0-9])?', 
-    #'r_s':'(\+|\-)?([0-9])*\.([0-9])+(([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]))',
     'r_i':'[0-9](\+|\-)'
     }
     errorMessage = ''
@@ -16,10 +14,6 @@ def error_messages( error_token ):
             errorMessage = 'Need white space between symbol and integer'
         else:
             errorMessage = 'Need white space between symbol and real'
-    #elif re.search(error_model_patterns['i_s'], error_token) != None:
-     #   errorMessage = 'Do not put integer before symbol, need white space'
-      #  if re.search(error_model_patterns['r_s'], error_token) != None:
-       #     errorMessage = 'Do not put real number before symbol, need white space'
     if re.search('\#', error_token) != None:
         if re.search('\#t|\#f',error_token) != None:
             if re.search('\.', error_token) != None:
@@ -145,5 +139,6 @@ def scanner( inputStrings='', mode='s' ):
         return output
     if (error == True):
         return errorMessage
+    print(tokens)
     return tokens
 
