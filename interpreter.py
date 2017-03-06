@@ -19,28 +19,6 @@ def interpreter( parserTree ):
     print(convert(parserTree))
     print(checkFormat(parserTree))
 
-def plus(tree):
-    if len(tree) == 3:
-        value = 0
-        print(tree)
-        for i in range(1,3):
-            print(tree[i])
-            if type(tree[i]) is list:
-                print(1)
-                value = value + checkFormat(tree[i])
-
-            elif list(tree[i])[0] == 'INTEGER':
-                print(2)
-                value = value + int(tree[i][list(tree[i])[0]])
-
-            else:
-                return "plus:unknow error"
-
-        return value
-
-    else:
-        return "Error: need provide valid number of arguments"
-
 def convert(tree):
     for i in range(len(tree)):
         if type(tree[i]) is list:
@@ -67,6 +45,52 @@ def checkFormat(parserTree):
     else:
         return "Invalid application " + parserTree[0][list(parserTree[0])[0]]
 
+'''
+    predefined functions
+
+'''
+def plus(tree):
+    value = 0
+    for i in range(1,len(tree)):
+        if type(tree[i]) is list:
+            value = value + checkFormat(tree[i])
+        elif list(tree[i])[0] == 'INTEGER':
+            value = value + int(tree[i][list(tree[i])[0]])
+        elif list(tree[i])[0] == 'REAL':
+            value = value + float(tree[i][list(tree[i])[0]])
+        else:
+            return "ERROR_PLUS: Only integer or real type argument is accept"
+    return value
+
+def lessthan(tree):
+    if len(tree) == 3:
+            if type(tree[1]) is list:
+                num1 = checkFormat(tree[1])
+            elif list(tree[1])[0] == 'INTEGER' or list(tree[1])[0] == 'REAL':
+                num1 = float(tree[1][list(tree[1])[0]])
+            else:
+                return "ERROR_LESSTHAN: Wrong argument %s, only accpet integer or real"%(tree[1][list(tree[1])[0]])
+
+            if type(tree[2]) is list:
+                num2 = checkFormat(tree[2])
+            elif list(tree[2])[0] == 'INTEGER' or list(tree[2])[0] == 'REAL':
+                num2 = float(tree[2][list(tree[2])[0]])
+            else:
+                return "ERROR_LESSTHAN: Wrong argument %s, only accpet integer or real"%(tree[2][list(tree[2])[0]])
+
+            if (type(num1) is float or type(num1) is int) and (type(num2) is float or type(num2) is int):
+                if num1 < num2:
+                    return '#t'
+                else:
+                    return '#f'
+            else:
+                return "ERROR_LESSTHAN: only accept integer or real"
+            
+    else:
+        return "ERROR: there must be exactly two arguments!"
+
+
 if __name__ == '__main__':
-    parserTree = ['plus', '3', ['plus', '4', '3']]
+    #parserTree = ['plus', 'asd', ['plus', '4', '3'],'4','5']
+    parserTree = ['lessthan','1',['plus', 'Aqwe', 'asd']]
     interpreter(parserTree)
