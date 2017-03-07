@@ -16,10 +16,17 @@ model_patterns = {
 preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if']
 
 def interpreter( parserTree ):
+    '''
+        The main function
+    '''
     convert(parserTree)
     print(checkFormat(parserTree))
 
 def convert(tree):
+    '''
+        Convert the input tree to the format that with type infront of value
+
+    '''
     for i in range(len(tree)):
         if type(tree[i]) is list:
             convert(tree[i])
@@ -30,6 +37,10 @@ def convert(tree):
     return tree
 
 def convertBack( tree ):
+    '''
+        Convert back the tree with type format to their original version
+
+    '''
     for i in range(len(tree)):
         if type(tree[i]) is list:
             convertBack(tree[i])
@@ -39,6 +50,10 @@ def convertBack( tree ):
     return '( '+ toStr( tree ) +')'
 
 def toStr(parserT):
+    '''
+        Convert the tree structure to string
+
+    '''
     returnStr = ''
     for i in parserT:
         if type(i) is list:
@@ -48,6 +63,12 @@ def toStr(parserT):
     return returnStr
 
 def checkFormat(parserTree):
+    '''
+        The function to check input tree and decide which predefined function
+        should be called
+
+    '''
+
     if type(parserTree[0]) is not list and list(parserTree[0])[0] == 'SYMBOL':
         predefined = False
         for func in preDefFunc:
@@ -68,6 +89,10 @@ def checkFormat(parserTree):
 
 '''
 def plus(tree):
+    '''
+        The plus function
+
+    '''
     value = 0
     for i in range(1,len(tree)):
         if type(tree[i]) is list:
@@ -81,6 +106,9 @@ def plus(tree):
     return value
 
 def lessthan(tree):
+    '''
+        The less than function
+    '''
     if len(tree) == 3:
             if type(tree[1]) is list:
                 num1 = checkFormat(tree[1])
