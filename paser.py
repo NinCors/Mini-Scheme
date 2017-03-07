@@ -142,10 +142,9 @@ def treeToStr(parserT):
     returnStr = ''
     for i in parserT:
         if type(i) is list:
-            returnStr = returnStr + "() -> \n"
-            returnStr = returnStr + "( " + treeToStr(i) + " ) "
+            returnStr = returnStr + "() -> "
+            returnStr = returnStr + "( " + treeToStr(i) + ") "
         else:
             returnStr = returnStr + i + " " 
-
     return returnStr
 

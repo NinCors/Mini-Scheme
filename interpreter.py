@@ -16,7 +16,7 @@ model_patterns = {
 preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if']
 
 def interpreter( parserTree ):
-    print(convert(parserTree))
+    convert(parserTree)
     print(checkFormat(parserTree))
 
 def convert(tree):
@@ -28,7 +28,25 @@ def convert(tree):
             tree[i] = {}
             tree[i][tmp_tree[0]] = tmp_tree[1]
     return tree
-   
+
+def convertBack( tree ):
+    for i in range(len(tree)):
+        if type(tree[i]) is list:
+            convertBack(tree[i])
+        else:
+            tmp = tree[i][list(tree[i])[0]]
+            tree[i] = tmp
+    return '( '+ toStr( tree ) +')'
+
+def toStr(parserT):
+    returnStr = ''
+    for i in parserT:
+        if type(i) is list:
+            returnStr = returnStr + "( " + toStr(i) + ") "
+        else:
+            returnStr = returnStr + i + " " 
+    return returnStr
+
 def checkFormat(parserTree):
     if type(parserTree[0]) is not list and list(parserTree[0])[0] == 'SYMBOL':
         predefined = False
@@ -89,8 +107,38 @@ def lessthan(tree):
     else:
         return "ERROR: there must be exactly two arguments!"
 
+def isnull(tree):
+    if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
+        if len(tree[2]) == 0:
+            return '#t'
+        else:
+            return '#f'
+    else:
+        return "ERROR_ISNULL: Need be exactly one list argument"
+
+def car(tree):
+    if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
+        if len(tree[2]) > 0:
+            if type(tree[2][0]) is list:
+                return tree[2][0]
+            else:
+                return tree[2][0][list(tree[2][0])[0]]
+        else:
+            return "ERROR_CAR: Don't accept empty list argument"
+    else:
+        return "ERROR_CAR: Need be exactly one list argument"    
+
+def cdr(tree):
+    if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
+        if len(tree[2]) > 0:
+            tree[2].pop(0)
+            return convertBack(tree[2])
+        else:
+            return "ERROR_CDR: Don't accept empty list argument"
+    else:
+        return "ERROR_CDR: Need be exactly one list argument"    
 
 if __name__ == '__main__':
     #parserTree = ['plus', 'asd', ['plus', '4', '3'],'4','5']
-    parserTree = ['lessthan','1',['plus', 'Aqwe', 'asd']]
+    parserTree = ['cdr','\'',['1',['plus','4','3'],'3']]
     interpreter(parserTree)
