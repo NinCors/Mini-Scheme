@@ -15,12 +15,17 @@ model_patterns = {
 
 preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if']
 
+defined = []
+
 def interpreter( parserTree ):
     '''
         The main function
     '''
+    print( parserTree)
     convert(parserTree)
+    print( parserTree)
     print(checkFormat(parserTree))
+    print(defined)
 
 def convert(tree):
     '''
@@ -58,6 +63,9 @@ def toStr(parserT):
     for i in parserT:
         if type(i) is list:
             returnStr = returnStr + "( " + toStr(i) + ") "
+        elif type(i) is dict:
+            print(i[list(i)[0]][0])
+            returnStr = returnStr + i[list(i)[0]][0] + " "
         else:
             returnStr = returnStr + i + " " 
     return returnStr
@@ -84,11 +92,13 @@ def checkFormat(parserTree):
     else:
         return "Invalid application " + parserTree[0][list(parserTree[0])[0]]
 
+
 '''
     predefined functions
 
 '''
 def plus(tree):
+
     '''
         The plus function
 
@@ -106,6 +116,7 @@ def plus(tree):
     return value
 
 def lessthan(tree):
+
     '''
         The less than function
     '''
@@ -136,6 +147,7 @@ def lessthan(tree):
         return "ERROR: there must be exactly two arguments!"
 
 def isnull(tree):
+
     if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
         if len(tree[2]) == 0:
             return '#t'
@@ -145,6 +157,7 @@ def isnull(tree):
         return "ERROR_ISNULL: Need be exactly one list argument"
 
 def car(tree):
+
     if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
         if len(tree[2]) > 0:
             if type(tree[2][0]) is list:
@@ -157,6 +170,7 @@ def car(tree):
         return "ERROR_CAR: Need be exactly one list argument"    
 
 def cdr(tree):
+
     if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
         if len(tree[2]) > 0:
             tree[2].pop(0)
@@ -166,7 +180,47 @@ def cdr(tree):
     else:
         return "ERROR_CDR: Need be exactly one list argument"    
 
+def define(tree):
+    if [list(tree[1])[0]][0] == 'SYMBOL':
+        if len(tree) == 4 and tree[2][list(tree[2])[0]] == '\'' and type(tree[3]) is list:
+            key = tree[1][list(tree[1])[0]]
+            value = '\'(' + toStr(tree[3])+')'
+            variable = {}
+            variable[key] = value
+            defined.append(variable)
+        elif len(tree) == 3:
+            key = tree[1][list(tree[1])[0]]
+            value = tree[2][list(tree[2])[0]]
+            variable = {}
+            variable[key] = value
+            defined.append(variable)
+        else:
+            return "DEFINE_ERROR: Need provide exactly one expression"
+
+    else:
+        return "DEFINE_ERROR: Wrong variablename: %s ! Need provide a symbol as variable name."%(tree[1][list(tree[1])[0]])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
 if __name__ == '__main__':
     #parserTree = ['plus', 'asd', ['plus', '4', '3'],'4','5']
-    parserTree = ['cdr','\'',['1',['plus','4','3'],'3']]
+    #parserTree = ['cdr','\'',['1',['plus','4','3'],'3']]
+    parserTree = ['define','x','\'',['1','2','3', ['1']]]
     interpreter(parserTree)
