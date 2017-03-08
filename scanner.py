@@ -139,6 +139,5 @@ def scanner( inputStrings='', mode='s' ):
         return output
     if (error == True):
         return errorMessage
-    print(tokens)
     return tokens
 

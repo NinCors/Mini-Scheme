@@ -17,13 +17,20 @@ preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if']
 
 defined = []
 
+defined_key = []
+
 def interpreter( parserTree ):
     '''
         The main function
     '''
+    print("This is parserTree")
     print( parserTree)
-    convert(parserTree)
-    print( parserTree)
+    print("This is convert parserTree")
+    print(convert(parserTree))
+    print(parserTree)
+    print("This is defined ")
+    print(defined)
+    print("This is checkformat")
     print(checkFormat(parserTree))
     print(defined)
 
@@ -64,8 +71,7 @@ def toStr(parserT):
         if type(i) is list:
             returnStr = returnStr + "( " + toStr(i) + ") "
         elif type(i) is dict:
-            print(i[list(i)[0]][0])
-            returnStr = returnStr + i[list(i)[0]][0] + " "
+            returnStr = returnStr + i[list(i)[0]] + " "
         else:
             returnStr = returnStr + i + " " 
     return returnStr
@@ -78,15 +84,19 @@ def checkFormat(parserTree):
     '''
 
     if type(parserTree[0]) is not list and list(parserTree[0])[0] == 'SYMBOL':
-        predefined = False
-        for func in preDefFunc:
-            if parserTree[0][list(parserTree[0])[0]] == func:
-                predefined = True
-                funcString = func + '(parserTree)'
-                result = eval(funcString)
-                return result
-        if predefined == False:
+        func_name = parserTree[0][list(parserTree[0])[0]]
+        if func_name in preDefFunc:
+            funcString = func_name + '(parserTree)'
+            result = eval(funcString)
+            return result
+        elif func_name in defined_key:
+            for func in defined:
+                if func_name == list(func)[0]:
+                    funcString = func[func_name]
+                    interpreter(parser(scanner(funcString,'s'),'s'))
+        else:
             return "The function: %s is not defined"%(parserTree[0][list(parserTree[0])[0]])
+
     elif type(parserTree[0]) is list:
         checkFormat(parserTree[0])
     else:
@@ -170,7 +180,6 @@ def car(tree):
         return "ERROR_CAR: Need be exactly one list argument"    
 
 def cdr(tree):
-
     if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
         if len(tree[2]) > 0:
             tree[2].pop(0)
@@ -187,43 +196,23 @@ def define(tree):
             return "DEFINE_ERROR: Can't define a variable that has same name with predefined function"
         else:
             if len(tree) == 4 and tree[2][list(tree[2])[0]] == '\'' and type(tree[3]) is list:
-                key = tree[1][list(tree[1])[0]]
                 value = '\'(' + toStr(tree[3])+')'
-                variable = {}
-                variable[key] = value
-                defined.append(variable)
             elif len(tree) == 3:
-                key = tree[1][list(tree[1])[0]]
-                value = tree[2][list(tree[2])[0]]
-                variable = {}
-                variable[key] = value
-                defined.append(variable)
+                value = tree[2][list(tree[2])]
             else:
                 return "DEFINE_ERROR: Need provide exactly one expression"
+            key = tree[1][list(tree[1])[0]]  
+            defined_key.append(key)  
+            variable = {}
+            variable[key] = value
+            defined.append(variable)
     else:
         return "DEFINE_ERROR: Wrong variablename: %s ! Need provide a symbol as variable name."%(tree[1][list(tree[1])[0]])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
 
 if __name__ == '__main__':
     #parserTree = ['plus', 'asd', ['plus', '4', '3'],'4','5']
     #parserTree = ['cdr','\'',['1',['plus','4','3'],'3']]
-    parserTree = ['define','x','\'',['1','2','3', ['1']]]
+    parserTree = ['define','x','\'',['plus','2','3']]
+    interpreter(parserTree)
+    parserTree = ['x']
     interpreter(parserTree)

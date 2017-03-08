@@ -130,7 +130,6 @@ def parser( tokens, mode = 't' ):
     elif cT and cP and cQ:
         parserT = []
         parserTree(tmp_tokens1,parserT)
-        print(parserT)
         if mode == "s":
             parserT = treeToStr(parserT)
         return parserT[0],True
