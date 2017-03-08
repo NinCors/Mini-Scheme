@@ -90,6 +90,13 @@ def checkFormat(parserTree):
             result = eval(funcString)
             return result
         elif func_name in defined_key:
+            '''
+                Debug Todo: 
+                        1. if key matchs, get the defined value string.
+                        2. use scanner -> parser to generate the parserTree.
+                        3. Pass this parserTree to interpreter to find the value. (maybe wrong here)
+        
+            '''
             for func in defined:
                 if func_name == list(func)[0]:
                     funcString = func[func_name]
