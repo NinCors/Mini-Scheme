@@ -182,21 +182,24 @@ def cdr(tree):
 
 def define(tree):
     if [list(tree[1])[0]][0] == 'SYMBOL':
-        if len(tree) == 4 and tree[2][list(tree[2])[0]] == '\'' and type(tree[3]) is list:
-            key = tree[1][list(tree[1])[0]]
-            value = '\'(' + toStr(tree[3])+')'
-            variable = {}
-            variable[key] = value
-            defined.append(variable)
-        elif len(tree) == 3:
-            key = tree[1][list(tree[1])[0]]
-            value = tree[2][list(tree[2])[0]]
-            variable = {}
-            variable[key] = value
-            defined.append(variable)
+        variable = tree[1][list(tree[1])[0]]
+        if variable in preDefFunc:
+            return "DEFINE_ERROR: Can't define a variable that has same name with predefined function"
         else:
-            return "DEFINE_ERROR: Need provide exactly one expression"
-
+            if len(tree) == 4 and tree[2][list(tree[2])[0]] == '\'' and type(tree[3]) is list:
+                key = tree[1][list(tree[1])[0]]
+                value = '\'(' + toStr(tree[3])+')'
+                variable = {}
+                variable[key] = value
+                defined.append(variable)
+            elif len(tree) == 3:
+                key = tree[1][list(tree[1])[0]]
+                value = tree[2][list(tree[2])[0]]
+                variable = {}
+                variable[key] = value
+                defined.append(variable)
+            else:
+                return "DEFINE_ERROR: Need provide exactly one expression"
     else:
         return "DEFINE_ERROR: Wrong variablename: %s ! Need provide a symbol as variable name."%(tree[1][list(tree[1])[0]])
 
