@@ -216,6 +216,10 @@ def define(tree):
     else:
         return "DEFINE_ERROR: Wrong variablename: %s ! Need provide a symbol as variable name."%(tree[1][list(tree[1])[0]])
 
+def if(tree):
+    
+
+
 if __name__ == '__main__':
     #parserTree = ['plus', 'asd', ['plus', '4', '3'],'4','5']
     #parserTree = ['cdr','\'',['1',['plus','4','3'],'3']]
