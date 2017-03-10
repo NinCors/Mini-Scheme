@@ -30,11 +30,9 @@ def checkToken(tokens):
             return False, em
     return True, 'cT test passed!'
 
+'''
 def checkParentheses(tokens):
-    '''
         check if all the parentheses are bound
-
-    '''
     #check if there is any parentheses
     pt = {'(',')'}
     clear = True
@@ -57,19 +55,36 @@ def checkParentheses(tokens):
             return (checkParentheses(tokens))
         else:
             return False,"ERROR: MISSING parentheses!"
+'''
+
+def checkParentheses(tokens):
+    left = 0
+    right = 0
+    for token in tokens:
+        if token == '(':
+            left = left + 1
+        if token == ')':
+            right = right + 1
+    if left == right:
+        return True, 'cP test passed!'
+    else:
+        return False,"ERROR: MISSING parentheses!"
 
 
 def findStartEnd(tokens):
     start = -1
     end = -1        
-    findFirst = False
-    for i in range(len(tokens)):
-        if tokens[i] == '(' and findFirst == False:
+
+    findEnd = False
+    for w in range(len(tokens)):
+        if tokens[w] == ')' and findEnd == False:
+            end = w
+            findEnd = True
+
+    for i in range(end):
+        if tokens[i] == '(':
             start = i
-            findFirst = True
-            for w in range(i+1, len(tokens)):
-                if tokens[w] == ')':
-                    end = w
+
     return start, end
 
 
@@ -79,32 +94,33 @@ def parserTree(tokens, parserT):
 
     '''
     start,end = findStartEnd(tokens)
-    #print("\nThis is the token")
-    #print(tokens)
-    #print("This round start! The start is %d and end is %d"%(start,end))
+    print("\nThis is the token")
+    print(tokens)
+    print("This round start! The start is %d and end is %d"%(start,end))
     # Now, I alreay passed the checkParentheses test.If start or end still equal -1,
     # then it means there is not any parenthese in the tokens
     if start != -1 and end != -1:
         # before
-        #print("before_append")
+        print("before_append")
         for i in range(start):
-            #print(tokenns[i])
+            print(tokens[i])
             parserT.append(tokens[i])
         # Between start and after
         parserT.append([])
         tmp_tokens = tokens[start+1:end]
-        #print("Between_append")
-        #print(tmp_tokens)
+        print("Between_append")
+        print(tmp_tokens)
         parserTree(tmp_tokens, parserT[start])
         # After 
-        #print("After_append")
+        print("After_append")
+
         for w in range(end+1, len(tokens)):
-            #print(tokens[w])
+            print(tokens[w])
             parserT.append(tokens[w])
     else:
-        #print("else_append")
+        print("else_append")
         for i in range(len(tokens)):
-            #print(tokens[i])
+            print(tokens[i])
             parserT.append(tokens[i])
         return parserT 
 
