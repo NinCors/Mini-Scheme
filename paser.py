@@ -47,6 +47,9 @@ def checkParentheses(tokens):
     else:
         # else, start check pair
         start,end = findStartEnd(tokens)
+        print("In this round, start is %d and end is %d"%( start,end))
+        print("Tokens are")
+        print(tokens)
         if start != -1 and end != -1:
             # pop start and end, recursively call this function
             tokens.pop(start)
@@ -69,31 +72,43 @@ def findStartEnd(tokens):
                     end = w
     return start, end
 
+
 def parserTree(tokens, parserT):
     '''
         Build the tree structure
 
     '''
     start,end = findStartEnd(tokens)
+    #print("\nThis is the token")
+    #print(tokens)
+    #print("This round start! The start is %d and end is %d"%(start,end))
     # Now, I alreay passed the checkParentheses test.If start or end still equal -1,
     # then it means there is not any parenthese in the tokens
     if start != -1 and end != -1:
         # before
+        #print("before_append")
         for i in range(start):
+            #print(tokenns[i])
             parserT.append(tokens[i])
         # Between start and after
         parserT.append([])
         tmp_tokens = tokens[start+1:end]
+        #print("Between_append")
+        #print(tmp_tokens)
         parserTree(tmp_tokens, parserT[start])
         # After 
-        for w in range(end, len(tokens)-1):
+        #print("After_append")
+        for w in range(end+1, len(tokens)):
+            #print(tokens[w])
             parserT.append(tokens[w])
-
-
     else:
+        #print("else_append")
         for i in range(len(tokens)):
+            #print(tokens[i])
             parserT.append(tokens[i])
         return parserT 
+
+
 
 def parser( tokens, mode = 't' ):
     '''
@@ -131,7 +146,8 @@ def parser( tokens, mode = 't' ):
         parserT = []
         parserTree(tmp_tokens1,parserT)
         if mode == "s":
-            parserT = treeToStr(parserT)
+            treeStr = treeToStr(parserT)
+            return treeStr,True
         return parserT[0],True
     else:
         return "Parser ERROR",False
@@ -141,7 +157,7 @@ def treeToStr(parserT):
     returnStr = ''
     for i in parserT:
         if type(i) is list:
-            returnStr = returnStr + "() -> "
+            returnStr = returnStr + "() -> \n"
             returnStr = returnStr + "( " + treeToStr(i) + ") "
         else:
             returnStr = returnStr + i + " " 

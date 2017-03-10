@@ -23,16 +23,19 @@ def interpreter( parserTree ):
     '''
         The main function
     '''
-    print("This is parserTree")
-    print( parserTree)
-    print("This is convert parserTree")
-    print(convert(parserTree))
+    print("\n This is parserTree")
     print(parserTree)
-    print("This is defined ")
-    print(defined)
-    print("This is checkformat")
-    print(checkFormat(parserTree))
-    print(defined)
+    #print("This is convert parserTree")
+
+    convert(parserTree)
+    #print("This is defined ")
+    #print(defined)
+    #print("This is checkformat")
+    result = checkFormat(parserTree)
+    #print(result)
+    #print("\n")
+    return result
+    
 
 def convert(tree):
     '''
@@ -76,23 +79,28 @@ def toStr(parserT):
             returnStr = returnStr + i + " " 
     return returnStr
 
-def checkFormat(parserTree):
-    '''
-        The function to check input tree and decide which predefined function
-        should be called
-
-    '''
-
-    if len(parserTree) == 1 and list(parserTree[0])[0] == 'SYMBOL':
+def checkVariable(parserTree):
+    
         var_name = parserTree[0][list(parserTree[0])[0]]
         if var_name in defined_key:
             return defined[var_name]
         else:
             return "%s is not defined! "%(var_name)
 
+def checkFormat(parserTree):
+    '''
+        The function to check input tree and decide which predefined function
+        should be called
+
+    '''
+    if type(parserTree) is not list:
+        return checkVariable(parserTree)
+
     if type(parserTree[0]) is not list and list(parserTree[0])[0] == 'SYMBOL':
         func_name = parserTree[0][list(parserTree[0])[0]]
         if func_name in preDefFunc:
+            if func_name == 'if':
+                func_name = 'if_f'
             funcString = func_name + '(parserTree)'
             result = eval(funcString)
             return result
@@ -202,7 +210,7 @@ def define(tree):
             if len(tree) == 4 and tree[2][list(tree[2])[0]] == '\'' and type(tree[3]) is list:
                 value = '\'(' + toStr(tree[3])+')'
             elif len(tree) == 3:
-                value = tree[2][list(tree[2])]
+                value = tree[2][list(tree[2])[0]]
             else:
                 return "DEFINE_ERROR: Need provide exactly one expression"
             key = tree[1][list(tree[1])[0]]  
@@ -211,7 +219,7 @@ def define(tree):
     else:
         return "DEFINE_ERROR: Wrong variablename: %s ! Need provide a symbol as variable name."%(tree[1][list(tree[1])[0]])
 
-def if(tree):
+def if_f(tree):
     if len(tree) == 4:
         if type(tree[1]) is list:
             if_statement = checkFormat(tree[1])
