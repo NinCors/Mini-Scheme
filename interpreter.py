@@ -15,7 +15,7 @@ model_patterns = {
 
 preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if']
 
-defined = []
+defined = {}
 
 defined_key = []
 
@@ -83,24 +83,19 @@ def checkFormat(parserTree):
 
     '''
 
+    if len(parserTree) == 1 and list(parserTree[0])[0] == 'SYMBOL':
+        var_name = parserTree[0][list(parserTree[0])[0]]
+        if var_name in defined_key:
+            return defined[var_name]
+        else:
+            return "%s is not defined! "%(var_name)
+
     if type(parserTree[0]) is not list and list(parserTree[0])[0] == 'SYMBOL':
         func_name = parserTree[0][list(parserTree[0])[0]]
         if func_name in preDefFunc:
             funcString = func_name + '(parserTree)'
             result = eval(funcString)
             return result
-        elif func_name in defined_key:
-            '''
-                Debug Todo: 
-                        1. if key matchs, get the defined value string.
-                        2. use scanner -> parser to generate the parserTree.
-                        3. Pass this parserTree to interpreter to find the value. (maybe wrong here)
-        
-            '''
-            for func in defined:
-                if func_name == list(func)[0]:
-                    funcString = func[func_name]
-                    interpreter(parser(scanner(funcString,'s'),'s'))
         else:
             return "The function: %s is not defined"%(parserTree[0][list(parserTree[0])[0]])
 
@@ -173,6 +168,7 @@ def isnull(tree):
     else:
         return "ERROR_ISNULL: Need be exactly one list argument"
 
+
 def car(tree):
 
     if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
@@ -185,6 +181,7 @@ def car(tree):
             return "ERROR_CAR: Don't accept empty list argument"
     else:
         return "ERROR_CAR: Need be exactly one list argument"    
+
 
 def cdr(tree):
     if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
@@ -210,14 +207,12 @@ def define(tree):
                 return "DEFINE_ERROR: Need provide exactly one expression"
             key = tree[1][list(tree[1])[0]]  
             defined_key.append(key)  
-            variable = {}
-            variable[key] = value
-            defined.append(variable)
+            defined[key] = value
     else:
         return "DEFINE_ERROR: Wrong variablename: %s ! Need provide a symbol as variable name."%(tree[1][list(tree[1])[0]])
 
-def if(tree):
-    
+#def if(tree):
+    #if len(tree) == 
 
 
 if __name__ == '__main__':
