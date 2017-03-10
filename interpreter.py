@@ -211,8 +211,21 @@ def define(tree):
     else:
         return "DEFINE_ERROR: Wrong variablename: %s ! Need provide a symbol as variable name."%(tree[1][list(tree[1])[0]])
 
-#def if(tree):
-    #if len(tree) == 
+def if(tree):
+    if len(tree) == 4:
+        if type(tree[1]) is list:
+            if_statement = checkFormat(tree[1])
+            if if_statement == '#t':
+                return checkFormat(tree[2])
+            elif if_statement == '#f':
+                return checkFormat(tree[3])
+            else:
+                return "IF_ERROR: %s is not a valid if statement"%(if_statement)
+        else:
+            return "IF_ERROR: Need provide a valid if statement"
+
+    else:
+        return "IF_ERROR: Wrong numbers of expression!"
 
 
 if __name__ == '__main__':
