@@ -13,9 +13,11 @@ def checkQuotation(tokens):
             if tokens[i+1] == ')':
                 return False,"ERROR: Need atom between ) and \'"
             #check before
+            '''
             if i >= 1:
                 if tokens[i-1] == ')':
                     return False,"ERROR: Don't put ) before \'"
+            '''
     return True,"cQ test Passed!"
 
 def checkToken(tokens):

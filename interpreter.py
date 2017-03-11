@@ -23,10 +23,11 @@ def interpreter( parserTree ):
     '''
         The main function
     '''
-    print("\n This is parserTree")
+    print("\nThis is parserTree")
     print(parserTree)
     #print("This is convert parserTree")
-
+    if type(parserTree) is not list:
+        return checkVariable(parserTree)
     convert(parserTree)
     #print("This is defined ")
     #print(defined)
@@ -80,12 +81,14 @@ def toStr(parserT):
     return returnStr
 
 def checkVariable(parserTree):
-    
-        var_name = parserTree[0][list(parserTree[0])[0]]
-        if var_name in defined_key:
-            return defined[var_name]
-        else:
-            return "%s is not defined! "%(var_name)
+    if type(parserTree) is dict:
+        var_name = parserTree[list(parserTree)[0]]
+    else:
+        var_name = parserTree
+    if var_name in defined_key:
+        return defined[var_name]
+    else:
+        return var_name
 
 def checkFormat(parserTree):
     '''
@@ -106,7 +109,7 @@ def checkFormat(parserTree):
             return result
         else:
             return "The function: %s is not defined"%(parserTree[0][list(parserTree[0])[0]])
-
+    #################################
     elif type(parserTree[0]) is list:
         checkFormat(parserTree[0])
     else:
@@ -182,7 +185,7 @@ def car(tree):
     if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
         if len(tree[2]) > 0:
             if type(tree[2][0]) is list:
-                return tree[2][0]
+                return convertBack(tree[2][0])
             else:
                 return tree[2][0][list(tree[2][0])[0]]
         else:
@@ -216,6 +219,7 @@ def define(tree):
             key = tree[1][list(tree[1])[0]]  
             defined_key.append(key)  
             defined[key] = value
+            return "%s is defined"%(key)
     else:
         return "DEFINE_ERROR: Wrong variablename: %s ! Need provide a symbol as variable name."%(tree[1][list(tree[1])[0]])
 

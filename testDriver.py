@@ -46,6 +46,7 @@ def testDriver_i():
 def testFunc():
     tokens = ['car', '(', '1', '2', ')', '(', '2', '3', ')']
     print(findRight(5,tokens))
+
 '''
     Test todo:
         plus: with 1 argument or none argumennt
@@ -55,8 +56,6 @@ def testFunc():
 
 '''
 
-
-
 if __name__ == '__main__':
     #testFunc()
-    testDriver_p()
+    testDriver_i()
