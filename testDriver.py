@@ -2,7 +2,7 @@
 import re
 import sys
 
-from paser import parser
+from paser import parser,findRight
 from scanner import scanner
 from interpreter import interpreter
 
@@ -43,6 +43,9 @@ def testDriver_i():
         outPut = "\nInput string : " + line + str(info) + '\n'
         sys.stdout.write(outPut)
 
+def testFunc():
+    tokens = ['car', '(', '1', '2', ')', '(', '2', '3', ')']
+    print(findRight(5,tokens))
 '''
     Test todo:
         plus: with 1 argument or none argumennt
@@ -55,4 +58,5 @@ def testDriver_i():
 
 
 if __name__ == '__main__':
+    #testFunc()
     testDriver_p()

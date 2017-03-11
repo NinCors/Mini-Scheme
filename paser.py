@@ -53,22 +53,6 @@ def checkParentheses(tokens):
         else:
             return False,"ERROR: MISSING parentheses!"
 
-
-'''
-def checkParentheses(tokens):
-    left = 0
-    right = 0
-    for token in tokens:
-        if token == '(':
-            left = left + 1
-        if token == ')':
-            right = right + 1
-    if left == right:
-        return True, 'cP test passed!'
-    else:
-        return False,"ERROR: MISSING parentheses!"
-'''
-
 def findStartEnd(tokens):
     pre_s = 0
     after_e = len(tokens)
@@ -105,68 +89,43 @@ def findRight(left_index,tokens):
 
 def findRight_sub(left_index, tokens,pop):
     start,end,b,a = findStartEnd(tokens)
+    #print("start is %d and end is %d"%(start,end))
     if start != -1 and end != -1:
         if start == left_index:
-            return end+pop                    
+            return end                    
         #pop start and end, recursively call this function
-        tokens.pop(start)
-        tokens.pop(end-1)
+        tokens[start] = ''
+        tokens[end] = ''
         return (findRight_sub(left_index,tokens,pop+2))
-'''
-def parserTree(tokens, parserT):
-    start,end,pre_s,after_e = findStartEnd(tokens)
-    print("\nThis is the token")
-    print(tokens)
-    print("This round start! The start is %d and end is %d and pre_s is %d and after_e is %d "%(start,end,pre_s,after_e))
-    # Now, I alreay passed the checkParentheses test.If start or end still equal -1,
-    # then it means there is not any parenthese in the tokens
-    if start != -1 and end != -1:
-        # before
-        print("before_append")
-        for i in range(pre_s+1,start):
-            print(tokens[i])
-            parserT.append(tokens[i])
-        # Between start and after
-        parserT.append([])
-        tmp_tokens = tokens[start+1:end]
-        print("Between_append")
-        print(tmp_tokens)
-        parserTree(tmp_tokens, parserT[len(parserT)-1])
-        # After 
-        print("After_append")
-        parserTree(tokens[end+1:after_e-1],parserT)
-
-    else:
-        print("else_append")
-        for i in range(len(tokens)):
-            print(tokens[i])
-            parserT.append(tokens[i])
-        return parserT 
-'''
 
 def parserTree(tokens, parserT):
-    inrange = 0
-    print("\nIn this round, tokens is ")
-    print(tokens)
-    print("In this round, parserT is ")
-    print(parserT)
+    inrange = -1
+    #print("\nIn this round, tokens is ")
+    #print(tokens)
+    #print("In this round, parserT is ")
+    #print(parserT)
     for i in range(len(tokens)):
-        print("I is %s" %(i))
+        #print("I is %s, value is %s and inrange is %d" %(i,tokens[i],inrange))
         if tokens[i] == '(' and i >= inrange:
+            
             right = findRight(i,tokens)
+            #print("Try to find right in tokens")
+            #print(tokens)
             
             if(type(right) is int):
+                tmp_tokens = []
                 tmp_tokens = tokens[i+1:right]
                 inrange = right
-                print("Left is %d annd right is %d"%(i,right))
+                #print("Left is %d annd right is %d"%(i,right))
+                #print("Find (), the values within is ")
+                #print(tmp_tokens)
+                parserT.append([])
+                parserTree(tmp_tokens,parserT[len(parserT)-1])
             else:
                 print("Can't find right!")
-            print("Find (), the values within is ")
-            print(tmp_tokens)
-            parserT.append([])
-            parserTree(tmp_tokens,parserT[len(parserT)-1])
-        elif i >= inrange and tokens[i] != ')':
-            print("Append token %s with index %s "%(tokens[i],i))
+            
+        elif i > inrange and tokens[i] != ')':
+            #print("Append token %s with index %s "%(tokens[i],i))
             parserT.append(tokens[i])
 
 def parser( tokens, mode = 't' ):
@@ -207,7 +166,7 @@ def parser( tokens, mode = 't' ):
         if mode == "s":
             treeStr = treeToStr(parserT)
             return treeStr,True
-        return parserT,True
+        return parserT[0],True
     else:
         return "Parser ERROR",False
 
