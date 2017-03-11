@@ -26,6 +26,7 @@ def testDriver_p():
             print('The input line is empty, exit program')
             sys.exit()
         parserInfo, status = parser(scanner(line,'t'),'t')
+        print("This is final result")
         print(parserInfo)
         #outPut = "\nInput string : " + line + parserInfo  + '\n'
         sys.stdout.write(outPut)
