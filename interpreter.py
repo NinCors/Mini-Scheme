@@ -23,18 +23,10 @@ def interpreter( parserTree ):
     '''
         The main function
     '''
-    print("\nThis is parserTree")
-    print(parserTree)
-    #print("This is convert parserTree")
     if type(parserTree) is not list:
         return checkVariable(parserTree)
     convert(parserTree)
-    #print("This is defined ")
-    #print(defined)
-    #print("This is checkformat")
     result = checkFormat(parserTree)
-    #print(result)
-    #print("\n")
     return result
     
 
@@ -239,11 +231,3 @@ def if_f(tree):
     else:
         return "IF_ERROR: Wrong numbers of expression!"
 
-
-if __name__ == '__main__':
-    #parserTree = ['plus', 'asd', ['plus', '4', '3'],'4','5']
-    #parserTree = ['cdr','\'',['1',['plus','4','3'],'3']]
-    parserTree = ['define','x','\'',['plus','2','3']]
-    interpreter(parserTree)
-    parserTree = ['x']
-    interpreter(parserTree)

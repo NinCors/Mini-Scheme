@@ -49,9 +49,9 @@ def testFunc():
 
 '''
     Test todo:
-        plus: with 1 argument or none argumennt
-        parserError: (isnnull '(1 2 3) '()) why this one miss parenthese
-        car: return with type format name before it {'SYMBOL': 'plus'}, need get rid of format
+        checkformat, function
+        add more functions
+        add more testcase
         
 
 '''
