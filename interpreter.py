@@ -255,3 +255,52 @@ def if_f(tree):
     else:
         return "IF_ERROR: Wrong numbers of expression!"
 
+
+
+
+'''
+Todo list: 
+        let, cons, multiply,eq?, append, length, reverse
+
+
+'''
+
+def let(tree):
+    if [list(tree[1])[0]][0] == 'SYMBOL':
+        variable = tree[1][list(tree[1])[0]]
+        if variable in preDefFunc:
+            return "Let_ERROR: Can't define a variable that has same name with predefined function"
+        else:
+            if len(tree) == 4 and tree[2][list(tree[2])[0]] == '\'' and type(tree[3]) is list:
+                value = '\'(' + toStr(tree[3])+')'
+            elif len(tree) == 3:
+                value = tree[2][list(tree[2])[0]]
+            else:
+                return "Let_ERROR: Need provide exactly one expression"
+            key = tree[1][list(tree[1])[0]]  
+            defined_key.append(key)  
+            defined[key] = value
+            return "%s is defined"%(key)
+    else:
+        return "Let_ERROR: Wrong variablename: %s ! Need provide a symbol as variable name."%(tree[1][list(tree[1])[0]])
+
+
+def multiply(tree):
+    value = 1
+    for i in range(1,len(tree)):
+        if type(tree[i]) is list:
+            value = value * checkFormat(tree[i])
+        elif list(tree[i])[0] == 'INTEGER':
+            value = value * int(tree[i][list(tree[i])[0]])
+        elif list(tree[i])[0] == 'REAL':
+            value = value * float(tree[i][list(tree[i])[0]])
+        elif list(tree[i][0] == 'SYMBOL'):
+            result = checkVariable(tree[i][list(tree[i])[0]])
+            if(type(result) is int or type(result) is float):
+                value = value * result
+            else:
+                return "ERROR_PLUS: The value of predefined variable %s is not integer or real"%(tree[i][list(tree[i])[0]])
+        else:
+            return "ERROR_PLUS: Only integer or real type argument is accept"
+    return value
+
