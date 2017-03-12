@@ -13,7 +13,7 @@ model_patterns = {
      'BOOLEAN':'(\#t|\#f)' 
     }
 
-preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if','let','multiply','equal']
+preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if','let','multiply','equal','cons']
 
 defined = {}
 
@@ -72,7 +72,7 @@ def toStr(parserT):
     returnStr = ''
     for i in parserT:
         if type(i) is list:
-            returnStr = returnStr + "( " + toStr(i) + ") "
+            returnStr = returnStr + "(" + toStr(i) + ") "
         elif type(i) is dict:
             returnStr = returnStr + i[list(i)[0]] + " "
         else:
@@ -191,7 +191,6 @@ def isnull(tree):
 
 def car(tree):
     if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
-        print(1)
         if len(tree[2]) > 0:
             if type(tree[2][0]) is list:
                 return convertBack(tree[2][0])
@@ -329,4 +328,48 @@ def equal(tree):
         return '#f'    
     else:
         return "ERROR_EQUAL: there must be exactly two arguments"
+
+def cons(tree):
+    if len(tree) == 5 and (tree[1][list(tree[1])[0]] == '\'' and tree[3][list(tree[3])[0]] == '\'' and type(tree[4]) is list):
+        if type(tree[2]) is list:
+            first = tree[2]
+        else:
+            first = checkVariable(tree[2][list(tree[2])[0]])
+        convertBack(tree[4])
+        tree[4].insert(0,first)
+        return '( ' + toStr(tree[4]) + ')'
+
+    elif len(tree) == 4 and (type(tree[1]) is not list and tree[2][list(tree[2])[0]] == '\'' and type(tree[3]) is list):
+        first = checkVariable(tree[1][list(tree[1])[0]])
+        convertBack(tree[3])
+        tree[3].insert(0,first)
+        return '( ' + toStr(tree[3])+ ')'
+    else:
+        return "ERROR_CONS: there must be two exactly atom type argument with \' "
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
