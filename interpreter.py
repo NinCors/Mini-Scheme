@@ -28,7 +28,17 @@ def interpreter( parserTree ):
     convert(parserTree)
     result = checkFormat(parserTree)
     return result
-    
+
+def convert_Tree(string):
+    '''
+       Convert string to abstract format tree
+    '''
+    string = '('+string + ')'
+    tree, status = parser(scanner(string,'s'),'t')
+    print("Convert string %s to tree "%(string))
+    print(tree)
+    print(status)
+    return tree
 
 def convert(tree):
     '''
@@ -101,9 +111,6 @@ def checkFormat(parserTree):
             return result
         else:
             return "The function: %s is not defined"%(parserTree[0][list(parserTree[0])[0]])
-    #################################
-    elif type(parserTree[0]) is list:
-        checkFormat(parserTree[0])
     else:
         return "Invalid application " + parserTree[0][list(parserTree[0])[0]]
 
@@ -126,6 +133,12 @@ def plus(tree):
             value = value + int(tree[i][list(tree[i])[0]])
         elif list(tree[i])[0] == 'REAL':
             value = value + float(tree[i][list(tree[i])[0]])
+        elif list(tree[i][0] == 'SYMBOL'):
+            result = checkVariable(tree[i][list(tree[i])[0]])
+            if(type(result) is int or type(result) is float):
+                value = value + result
+            else:
+                return "ERROR_PLUS: The value of predefined variable %s is not integer or real"%(tree[i][list(tree[i])[0]])
         else:
             return "ERROR_PLUS: Only integer or real type argument is accept"
     return value
@@ -140,6 +153,8 @@ def lessthan(tree):
                 num1 = checkFormat(tree[1])
             elif list(tree[1])[0] == 'INTEGER' or list(tree[1])[0] == 'REAL':
                 num1 = float(tree[1][list(tree[1])[0]])
+            elif list(tree[1])[0] == 'SYMBOL':
+                num1 = checkVariable(tree[1][list(tree[1])[0]])
             else:
                 return "ERROR_LESSTHAN: Wrong argument %s, only accpet integer or real"%(tree[1][list(tree[1])[0]])
 
@@ -147,6 +162,8 @@ def lessthan(tree):
                 num2 = checkFormat(tree[2])
             elif list(tree[2])[0] == 'INTEGER' or list(tree[2])[0] == 'REAL':
                 num2 = float(tree[2][list(tree[2])[0]])
+            elif list(tree[2])[0] == 'SYMBOL':
+                num2 = checkVariable(tree[1][list(tree[1])[0]])
             else:
                 return "ERROR_LESSTHAN: Wrong argument %s, only accpet integer or real"%(tree[2][list(tree[2])[0]])
 
@@ -168,6 +185,9 @@ def isnull(tree):
             return '#t'
         else:
             return '#f'
+    elif len(tree) == 2 and list(tree[1])[0] == 'SYMBOL':
+        result = "isnull " + checkVariable(tree[1][list(tree[1])[0]])
+        isnull(convert_Tree(result))
     else:
         return "ERROR_ISNULL: Need be exactly one list argument"
 
@@ -182,6 +202,9 @@ def car(tree):
                 return tree[2][0][list(tree[2][0])[0]]
         else:
             return "ERROR_CAR: Don't accept empty list argument"
+    elif len(tree) == 2 and list(tree[1])[0] == 'SYMBOL':
+        result = "car " + checkVariable(tree[1][list(tree[1])[0]])
+        car(convert_Tree(result))
     else:
         return "ERROR_CAR: Need be exactly one list argument"    
 
@@ -193,6 +216,9 @@ def cdr(tree):
             return convertBack(tree[2])
         else:
             return "ERROR_CDR: Don't accept empty list argument"
+    elif len(tree) == 2 and list(tree[1])[0] == 'SYMBOL':
+        result = "cdr " + checkVariable(tree[1][list(tree[1])[0]])
+        cdr(convert_Tree(result))
     else:
         return "ERROR_CDR: Need be exactly one list argument"    
 

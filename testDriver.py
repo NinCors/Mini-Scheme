@@ -52,8 +52,6 @@ def testFunc():
         checkformat, function
         add more functions
         add more testcase
-        
-
 '''
 
 if __name__ == '__main__':
