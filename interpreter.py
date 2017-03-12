@@ -4,6 +4,7 @@ import sys
 
 from paser import parser
 from scanner import scanner,pattern_match
+from extraFunc import *
 
 model_patterns = {
      'SYMBOL':'([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*',

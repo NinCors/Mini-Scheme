@@ -49,8 +49,8 @@ def testFunc():
 
 '''
     Test todo:
-        checkformat, function
         add more functions
+            let, cons, multiply,eq?, append, length, reverse
         add more testcase
 '''
 
