@@ -258,7 +258,7 @@ def if_f(tree):
 
 '''
 Todo list: 
-        let, cons, multiply,equal, append, length, reverse, or, and
+        let, cons, multiply,equal, length, reverse, or, and
 
 
 '''
@@ -346,19 +346,28 @@ def cons(tree):
         return '( ' + toStr(tree[3])+ ')'
     else:
         return "ERROR_CONS: there must be two exactly atom type argument with \' "
-    
+
+def len(tree):
+    '''
+        Get the length of list
+
+    '''
+    if len(tree) == 3 and (tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list):
+        return len(tree[2])
+    else:
+        return 'ERROR_LEN: there must be exactly one list type argument'
+
+def reverse(tree):
+    if len(tree) == 3 and (tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list):
+        return convertBack(tree[2].reverse())
+    else:
+        return 'ERROR_LEN: there must be exactly one list type argument'
+
+def or(tree):
 
 
 
-
-
-
-
-
-
-
-
-
+def and(tree):
 
 
 
