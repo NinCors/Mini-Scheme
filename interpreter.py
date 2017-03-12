@@ -4,7 +4,6 @@ import sys
 
 from paser import parser
 from scanner import scanner,pattern_match
-from extraFunc import *
 
 model_patterns = {
      'SYMBOL':'([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*',
@@ -14,7 +13,7 @@ model_patterns = {
      'BOOLEAN':'(\#t|\#f)' 
     }
 
-preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if']
+preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if','let','multiply','equal']
 
 defined = {}
 
@@ -161,7 +160,7 @@ def lessthan(tree):
             elif list(tree[2])[0] == 'INTEGER' or list(tree[2])[0] == 'REAL':
                 num2 = float(tree[2][list(tree[2])[0]])
             elif list(tree[2])[0] == 'SYMBOL':
-                num2 = checkVariable(tree[1][list(tree[1])[0]])
+                num2 = checkVariable(tree[2][list(tree[2])[0]])
             else:
                 return "ERROR_LESSTHAN: Wrong argument %s, only accpet integer or real"%(tree[2][list(tree[2])[0]])
 
@@ -174,7 +173,7 @@ def lessthan(tree):
                 return "ERROR_LESSTHAN: only accept integer or real"
             
     else:
-        return "ERROR: there must be exactly two arguments!"
+        return "ERROR_LESSTHAN: there must be exactly two arguments!"
 
 def isnull(tree):
 
@@ -260,7 +259,7 @@ def if_f(tree):
 
 '''
 Todo list: 
-        let, cons, multiply,eq?, append, length, reverse
+        let, cons, multiply,equal, append, length, reverse, or, and
 
 
 '''
@@ -304,3 +303,30 @@ def multiply(tree):
             return "ERROR_PLUS: Only integer or real type argument is accept"
     return value
 
+def equal(tree):
+    if len(tree) == 3 and (tree[1][list(tree[1])[0]] != '\'' and type(tree[2]) is not list):
+        if list(tree[1])[0] == 'SYMBOL':
+            first = checkVariable(tree[1][list(tree[1])[0]])
+        else:
+            first = tree[1]
+
+        if list(tree[2])[0] == 'SYMBOL':
+            second = checkVariable(tree[2][list(tree[2])[0]])
+        else:
+            second = tree[2]
+
+        if first == second:
+            return '#t'
+        else:
+            return '#f'
+    
+    elif len(tree) == 5 and (tree[1][list(tree[1])[0]] == '\'' and tree[3][list(tree[3])[0]] == '\''):
+        if tree[2] == tree[4]:
+            return '#t'
+        else:
+            return '#f'
+    elif len(tree) == 4 and (tree[1][list(tree[1])[0]] == '\'' or tree[3][list(tree[3])[0]] == '\''):
+        return '#f'    
+    else:
+        return "ERROR_EQUAL: there must be exactly two arguments"
+    
