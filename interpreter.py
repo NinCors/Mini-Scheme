@@ -35,10 +35,7 @@ def convert_Tree(string):
     '''
     string = '('+string + ')'
     tree, status = parser(scanner(string,'s'),'t')
-    print("Convert string %s to tree "%(string))
-    print(tree)
-    print(status)
-    return tree
+    return convert(tree)
 
 def convert(tree):
     '''
@@ -187,14 +184,14 @@ def isnull(tree):
             return '#f'
     elif len(tree) == 2 and list(tree[1])[0] == 'SYMBOL':
         result = "isnull " + checkVariable(tree[1][list(tree[1])[0]])
-        isnull(convert_Tree(result))
+        return checkFormat(convert_Tree(result))
     else:
         return "ERROR_ISNULL: Need be exactly one list argument"
 
 
 def car(tree):
-
     if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
+        print(1)
         if len(tree[2]) > 0:
             if type(tree[2][0]) is list:
                 return convertBack(tree[2][0])
@@ -204,7 +201,7 @@ def car(tree):
             return "ERROR_CAR: Don't accept empty list argument"
     elif len(tree) == 2 and list(tree[1])[0] == 'SYMBOL':
         result = "car " + checkVariable(tree[1][list(tree[1])[0]])
-        car(convert_Tree(result))
+        return checkFormat(convert_Tree(result))
     else:
         return "ERROR_CAR: Need be exactly one list argument"    
 
@@ -212,13 +209,13 @@ def car(tree):
 def cdr(tree):
     if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
         if len(tree[2]) > 0:
-            tree[2].pop(0)
-            return convertBack(tree[2])
+            tree[2][1:len(tree[2])]
+            return convertBack(tree[2][1:len(tree[2])])
         else:
             return "ERROR_CDR: Don't accept empty list argument"
     elif len(tree) == 2 and list(tree[1])[0] == 'SYMBOL':
         result = "cdr " + checkVariable(tree[1][list(tree[1])[0]])
-        cdr(convert_Tree(result))
+        return checkFormat(convert_Tree(result))
     else:
         return "ERROR_CDR: Need be exactly one list argument"    
 
