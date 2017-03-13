@@ -414,3 +414,23 @@ def and_d(tree):
     else:
         return "IF_ERROR: Wrong numbers of expression!"
 
+def runner():
+    finish = False
+    print("\nHello! welcome to use the shell version of mini-scheme.\nYou can type your code after < or type nothing to exit the program \n" )
+    while finish == False:
+        line = input('< ')
+        outPut = ''
+        if line == '':
+            print('The input line is empty, exit program')
+            finish = True
+        else:
+            info, status = parser(scanner(line,'s'),'t')
+            if status == True:
+                info = interpreter(info)
+            outPut = str(info) + '\n'
+            print(outPut)
+
+
+if __name__ == '__main__':
+    runner()
+
