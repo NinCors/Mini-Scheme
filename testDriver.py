@@ -40,7 +40,7 @@ def testDriver_i():
         info, status = parser(scanner(line,'s'),'t')
         if status == True:
             info = interpreter(info)
-        outPut = "\nInput string : " + line + str(info) + '\n'
+        outPut = "\n> " + line + str(info) + '\n'
         sys.stdout.write(outPut)
 
 def testFunc():

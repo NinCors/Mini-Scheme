@@ -13,7 +13,7 @@ model_patterns = {
      'BOOLEAN':'(\#t|\#f)' 
     }
 
-preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if','let','multiply','equal','cons']
+preDefFunc = ['plus','lessthan','isnull','car','cdr','define', 'if','let','multiply','equal','cons','length','reverse','or','and']
 
 defined = {}
 
@@ -25,6 +25,8 @@ def interpreter( parserTree ):
     '''
     if type(parserTree) is not list:
         return checkVariable(parserTree)
+    parserTree = checkQuation(parserTree)
+
     convert(parserTree)
     result = checkFormat(parserTree)
     return result
@@ -35,8 +37,16 @@ def convert_Tree(string):
     '''
     string = '('+string + ')'
     tree, status = parser(scanner(string,'s'),'t')
+    tree = checkQuation(tree)
     return convert(tree)
 
+def checkQuation(tree):
+    tmp_tree = []
+    for item in tree:
+        if item != '\'':
+            tmp_tree.append(item)
+    return tmp_tree
+            
 def convert(tree):
     '''
         Convert the input tree to the format that with type infront of value
@@ -103,6 +113,10 @@ def checkFormat(parserTree):
         if func_name in preDefFunc:
             if func_name == 'if':
                 func_name = 'if_f'
+            if func_name == 'or':
+                func_name = 'or_r'
+            if func_name == 'and':
+                func_name = 'and_d'
             funcString = func_name + '(parserTree)'
             result = eval(funcString)
             return result
@@ -177,8 +191,8 @@ def lessthan(tree):
 
 def isnull(tree):
 
-    if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
-        if len(tree[2]) == 0:
+    if len(tree) == 2 and type(tree[1]) is list:
+        if len(tree[1]) == 0:
             return '#t'
         else:
             return '#f'
@@ -190,12 +204,12 @@ def isnull(tree):
 
 
 def car(tree):
-    if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
-        if len(tree[2]) > 0:
-            if type(tree[2][0]) is list:
-                return convertBack(tree[2][0])
+    if len(tree) == 2 and type(tree[1]) is list:
+        if len(tree[1]) > 0:
+            if type(tree[1][0]) is list:
+                return convertBack(tree[1][0])
             else:
-                return tree[2][0][list(tree[2][0])[0]]
+                return tree[1][0][list(tree[1][0])[0]]
         else:
             return "ERROR_CAR: Don't accept empty list argument"
     elif len(tree) == 2 and list(tree[1])[0] == 'SYMBOL':
@@ -206,10 +220,10 @@ def car(tree):
 
 
 def cdr(tree):
-    if len(tree) == 3 and tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list:
-        if len(tree[2]) > 0:
-            tree[2][1:len(tree[2])]
-            return convertBack(tree[2][1:len(tree[2])])
+    if len(tree) == 2 and type(tree[1]) is list:
+        if len(tree[1]) > 0:
+            tree[1][1:len(tree[1])]
+            return convertBack(tree[1][1:len(tree[1])])
         else:
             return "ERROR_CDR: Don't accept empty list argument"
     elif len(tree) == 2 and list(tree[1])[0] == 'SYMBOL':
@@ -224,9 +238,9 @@ def define(tree):
         if variable in preDefFunc:
             return "DEFINE_ERROR: Can't define a variable that has same name with predefined function"
         else:
-            if len(tree) == 4 and tree[2][list(tree[2])[0]] == '\'' and type(tree[3]) is list:
-                value = '\'(' + toStr(tree[3])+')'
-            elif len(tree) == 3:
+            if len(tree) == 3 and type(tree[2]) is list:
+                value = '\'(' + toStr(tree[2])+')'
+            elif len(tree) == 3 and type(tree[2]) is dict:
                 value = tree[2][list(tree[2])[0]]
             else:
                 return "DEFINE_ERROR: Need provide exactly one expression"
@@ -257,7 +271,7 @@ def if_f(tree):
 
 
 '''
-Todo list: 
+extra functions:
         let, cons, multiply,equal, length, reverse, or, and
 
 
@@ -269,9 +283,9 @@ def let(tree):
         if variable in preDefFunc:
             return "Let_ERROR: Can't define a variable that has same name with predefined function"
         else:
-            if len(tree) == 4 and tree[2][list(tree[2])[0]] == '\'' and type(tree[3]) is list:
-                value = '\'(' + toStr(tree[3])+')'
-            elif len(tree) == 3:
+            if len(tree) == 3 and type(tree[2]) is list:
+                value = '\'(' + toStr(tree[2])+')'
+            elif len(tree) == 3 and type(tree[2] is dict):
                 value = tree[2][list(tree[2])[0]]
             else:
                 return "Let_ERROR: Need provide exactly one expression"
@@ -303,13 +317,13 @@ def multiply(tree):
     return value
 
 def equal(tree):
-    if len(tree) == 3 and (tree[1][list(tree[1])[0]] != '\'' and type(tree[2]) is not list):
-        if list(tree[1])[0] == 'SYMBOL':
+    if len(tree) == 3:
+        if type(tree[1]) is dict and list(tree[1])[0] == 'SYMBOL':
             first = checkVariable(tree[1][list(tree[1])[0]])
         else:
             first = tree[1]
 
-        if list(tree[2])[0] == 'SYMBOL':
+        if type(tree[2]) is dict and list(tree[2])[0] == 'SYMBOL':
             second = checkVariable(tree[2][list(tree[2])[0]])
         else:
             second = tree[2]
@@ -319,66 +333,84 @@ def equal(tree):
         else:
             return '#f'
     
-    elif len(tree) == 5 and (tree[1][list(tree[1])[0]] == '\'' and tree[3][list(tree[3])[0]] == '\''):
-        if tree[2] == tree[4]:
-            return '#t'
-        else:
-            return '#f'
-    elif len(tree) == 4 and (tree[1][list(tree[1])[0]] == '\'' or tree[3][list(tree[3])[0]] == '\''):
-        return '#f'    
     else:
         return "ERROR_EQUAL: there must be exactly two arguments"
 
 def cons(tree):
-    if len(tree) == 5 and (tree[1][list(tree[1])[0]] == '\'' and tree[3][list(tree[3])[0]] == '\'' and type(tree[4]) is list):
-        if type(tree[2]) is list:
-            first = tree[2]
+    if len(tree) == 3 and type(tree[2]) is list:
+        if type(tree[1]) is list:
+            first = tree[1]
         else:
-            first = checkVariable(tree[2][list(tree[2])[0]])
-        convertBack(tree[4])
-        tree[4].insert(0,first)
-        return '( ' + toStr(tree[4]) + ')'
-
-    elif len(tree) == 4 and (type(tree[1]) is not list and tree[2][list(tree[2])[0]] == '\'' and type(tree[3]) is list):
-        first = checkVariable(tree[1][list(tree[1])[0]])
-        convertBack(tree[3])
-        tree[3].insert(0,first)
-        return '( ' + toStr(tree[3])+ ')'
+            first = checkVariable(tree[1][list(tree[1])[0]])
+        convertBack(tree[2])
+        tree[2].insert(0,first)
+        return '( ' + toStr(tree[2]) + ')'
     else:
-        return "ERROR_CONS: there must be two exactly atom type argument with \' "
+        return "ERROR_CONS: there must be two exactly atom type argument and the second one should be list"
 
-def len(tree):
+def length(tree):
     '''
         Get the length of list
 
     '''
-    if len(tree) == 3 and (tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list):
-        return len(tree[2])
+    if len(tree) == 2 and type(tree[1]) is list:
+        return len(tree[1])
     else:
         return 'ERROR_LEN: there must be exactly one list type argument'
 
 def reverse(tree):
-    if len(tree) == 3 and (tree[1][list(tree[1])[0]] == '\'' and type(tree[2]) is list):
-        return convertBack(tree[2].reverse())
+    if len(tree) == 2 and type(tree[1]) is list:
+        tree[1].reverse()
+        return convertBack(tree[1])
     else:
         return 'ERROR_LEN: there must be exactly one list type argument'
 
-def or(tree):
 
+def or_r(tree):
+    torf = ['#t','#f']
+    if len(tree) == 3:
+        if type(tree[1]) is list:
+            statement1 = checkFormat(tree[1])
+            if statement1 not in torf:
+                return "OR_ERROR: Need provide boolean statement"
+        else:
+            return "OR_ERROR: Need provide a valid statement"
 
+        if type(tree[2]) is list:
+            statement2 = checkFormat(tree[2])
+            if statement2 not in torf:
+                return "OR_ERROR: Need provide boolean statement"
+        else:
+            return "IF_ERROR: Need provide a valid statement"
 
-def and(tree):
+        if statement1 == '#t' or statement2 == '#t':
+            return '#t'
+        else:
+            return '#f'
+    else:
+        return "IF_ERROR: Wrong numbers of expression!"
 
+def and_d(tree):
+    torf = ['#t','#f']
+    if len(tree) == 3:
+        if type(tree[1]) is list:
+            statement1 = checkFormat(tree[1])
+            if statement1 not in torf:
+                return "OR_ERROR: Need provide boolean statement"
+        else:
+            return "OR_ERROR: Need provide a valid statement"
 
+        if type(tree[2]) is list:
+            statement2 = checkFormat(tree[1])
+            if statement2 not in torf:
+                return "OR_ERROR: Need provide boolean statement"
+        else:
+            return "IF_ERROR: Need provide a valid statement"
 
-
-
-
-
-
-
-
-
-
-
+        if statement1 == '#t' and statement2 == '#t':
+            return '#t'
+        else:
+            return '#f'
+    else:
+        return "IF_ERROR: Wrong numbers of expression!"
 
